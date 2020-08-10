@@ -10,9 +10,13 @@ function getItems() {
 
 function addItem() {
     const addNameTextbox = document.getElementById('add-name');
+    const addTypeDropDown = document.getElementById('add-type')
+    let addType = addTypeDropDown.options[addTypeDropDown.selectedIndex].value;
+    console.log('addType: ' + addType);
 
     const item = {
-        Completed: false,
+        completed: false,
+        jediDoTypeId: parseInt(addType),
         name: addNameTextbox.value.trim()
     };
 
@@ -28,6 +32,7 @@ function addItem() {
         .then(() => {
             getItems();
             addNameTextbox.value = '';
+            // need to set the drop-down back to Do!
         })
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -51,12 +56,14 @@ function displayEditForm(id) {
 
 function updateItem() {
     const itemId = document.getElementById('edit-id').value;
-
-    console.log('Completed: ' + document.getElementById('edit-Completed').checked);
+    const addTypeDropDown = document.getElementById('edit-type')
+    let editType = addTypeDropDown.options[addTypeDropDown.selectedIndex].value;
+    //  console.log('Completed: ' + document.getElementById('edit-Completed').checked);
 
     const item = {
         id: parseInt(itemId, 10),
         Completed: document.getElementById('edit-Completed').checked,
+        jediDoTypeId: parseInt(editType),
         name: document.getElementById('edit-name').value.trim()
     };
 
@@ -121,10 +128,17 @@ function _displayItems(data) {
         td2.appendChild(textNode);
 
         let td3 = tr.insertCell(2);
-        td3.appendChild(editButton);
+        let typeNode = document.createTextNode(item.jediDoType);
+        td3.appendChild(typeNode);
+
+        //let td4 = tr.insertCell(3);
+        //   td4.appendChild();
 
         let td4 = tr.insertCell(3);
-        td4.appendChild(deleteButton);
+        td4.appendChild(editButton);
+
+        let td5 = tr.insertCell(4);
+        td5.appendChild(deleteButton);
     });
 
     todos = data;

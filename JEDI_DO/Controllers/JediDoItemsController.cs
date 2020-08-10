@@ -28,7 +28,7 @@ namespace JEDI_DO.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<JediDoItemDTO>> GetTodoItem(long id)
+        public async Task<ActionResult<JediDoItemDTO>> GetTodoItem(int id)
         {
             var todoItem = await _context.JediDoItem.FindAsync(id);
 
@@ -55,6 +55,7 @@ namespace JEDI_DO.Controllers
             }
 
             todoItem.Name = todoItemDTO.Name;
+            todoItem.JediDoTypeId = todoItemDTO.JediDoTypeId;
             todoItem.Completed = todoItemDTO.Completed;
 
             try
@@ -75,6 +76,7 @@ namespace JEDI_DO.Controllers
             var todoItem = new JediDoItem
             {
                 Completed = todoItemDTO.Completed,
+                JediDoTypeId = todoItemDTO.JediDoTypeId,
                 Name = todoItemDTO.Name
             };
 
@@ -88,7 +90,7 @@ namespace JEDI_DO.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<IActionResult> DeleteTodoItem(int id)
         {
             var todoItem = await _context.JediDoItem.FindAsync(id);
 
@@ -106,11 +108,15 @@ namespace JEDI_DO.Controllers
         private bool TodoItemExists(long id) =>
              _context.JediDoItem.Any(e => e.Id == id);
 
+
+        // TODO: CONVERT to Factory
         private static JediDoItemDTO ItemToDTO(JediDoItem todoItem) =>
             new JediDoItemDTO
             {
                 Id = todoItem.Id,
                 Name = todoItem.Name,
+                JediDoTypeId =  (todoItem.JediDoTypeId.HasValue)?  todoItem.JediDoTypeId.Value : 0,
+                JediDoType = todoItem.JediType,
                 Completed = todoItem.Completed
             };
     }

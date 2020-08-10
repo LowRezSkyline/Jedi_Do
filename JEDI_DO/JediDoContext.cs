@@ -10,7 +10,6 @@ namespace JEDI_DO.Models
         }
 
         public DbSet<JediDoItem> JediDoItem { get; set; }
-        public DbSet<JediDoType> JediDoType { get; set; }
 
     }
 }
