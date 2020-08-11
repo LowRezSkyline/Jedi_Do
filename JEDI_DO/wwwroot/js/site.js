@@ -1,18 +1,55 @@
 ﻿const uri = 'api/JediDoItems';
+const button = document.createElement('button');
+const debug = true;
 let todos = [];
+let tr = '';
+
+function Init() {
+
+    // hide the edit controls on initial load
+    document.getElementById('editForm').style.display = 'none';
+
+
+    // load the items
+    getItems();
+
+    // setup the textbox handler
+    const btnAdd = document.getElementById('btnAdd');
+    const txtAdd = document.getElementById('add-name');
+
+    const inputHandler = function (e) {
+        (txtAdd) ?  btnAdd.removeAttribute('disabled') :
+                            btnAdd.setAttribute('disabled', '');
+    }
+
+    txtAdd.addEventListener('input', inputHandler);
+    txtAdd.addEventListener('propertychange', inputHandler); // for IE8
+
+}
 
 function getItems() {
     fetch(uri)
         .then(response => response.json())
         .then(data => _displayItems(data))
-        .catch(error => console.error('Unable to get items.', error));
+        .catch(error => console_log('Unable to get items.', error));
+}
+
+function save(typeId) {
+
+    console_log('typeId: ' + typeId);
+
+    if (typeId == 0) {
+        addItem();
+    } else if (typeId == 1) {
+        updateItem()
+    }
 }
 
 function addItem() {
     const addNameTextbox = document.getElementById('add-name');
     const addTypeDropDown = document.getElementById('add-type')
     let addType = addTypeDropDown.options[addTypeDropDown.selectedIndex].value;
-    console.log('addType: ' + addType);
+    console_log('addType: ' + addType);
 
     const item = {
         completed: false,
@@ -32,33 +69,18 @@ function addItem() {
         .then(() => {
             getItems();
             addNameTextbox.value = '';
-            // need to set the drop-down back to Do!
+            btnAdd.setAttribute('disabled', '');
         })
         .catch(error => console.error('Unable to add item.', error));
 }
 
-function deleteItem(id) {
-    fetch(`${uri}/${id}`, {
-        method: 'DELETE'
-    })
-        .then(() => getItems())
-        .catch(error => console.error('Unable to delete item.', error));
-}
-
-function displayEditForm(id) {
-    const item = todos.find(item => item.id === id);
-
-    document.getElementById('edit-name').value = item.name;
-    document.getElementById('edit-id').value = item.id;
-    document.getElementById('edit-Completed').checked = item.Completed;
-    document.getElementById('editForm').style.display = 'block';
-}
-
 function updateItem() {
+
+    console_log('updateItem called'); 
+
     const itemId = document.getElementById('edit-id').value;
     const addTypeDropDown = document.getElementById('edit-type')
     let editType = addTypeDropDown.options[addTypeDropDown.selectedIndex].value;
-    //  console.log('Completed: ' + document.getElementById('edit-Completed').checked);
 
     const item = {
         id: parseInt(itemId, 10),
@@ -75,7 +97,10 @@ function updateItem() {
         },
         body: JSON.stringify(item)
     })
-        .then(() => getItems())
+        .then(() => {
+            getItems();
+            displayEditForm(0);
+        })  
         .catch(error => console.error('Unable to update item.', error));
 
     closeInput();
@@ -83,63 +108,111 @@ function updateItem() {
     return false;
 }
 
-function closeInput() {
-    document.getElementById('editForm').style.display = 'none';
+function deleteItem(id) {
+    fetch(`${uri}/${id}`, {
+        method: 'DELETE'
+    })
+        .then(() => getItems())
+        .catch(error => console.error('Unable to delete item.', error));
 }
 
-function _displayCount(itemCount) {
-    const name = (itemCount === 1) ? 'to-do' : 'to-dos';
+function displayEditForm(id) {
 
-    document.getElementById('counter').innerText = `${itemCount} ${name}`;
+    if (id<1) {
+        document.getElementById('addForm').style.display = '';
+    } else {
+        const item = todos.find(item => item.id === id);
+        console_log('id: ' + id);
+        document.getElementById('edit-name').value = item.name;
+        document.getElementById('edit-id').value = item.id;
+        document.getElementById('edit-Completed').checked = item.Completed;
+        document.getElementById('editForm').style.display = '';
+        document.getElementById('addForm').style.display = 'none';
+    }
+
+
+
+}
+
+
+function closeInput() {
+    document.getElementById('editForm').style.display = 'none';
+    displayEditForm(0);
+}
+
+function SetDisplayCount(itemCount) {
+    const name ='Total Records: ';
+    document.getElementById('counter').innerText = `${name} ${itemCount}`;
 }
 
 function _displayItems(data) {
     const tBody = document.getElementById('todos');
     tBody.innerHTML = '';
 
-    _displayCount(data.length);
-
-    const button = document.createElement('button');
+    SetDisplayCount(data.length);
 
     data.forEach(item => {
+        let isCompleteCheckbox = CreateCheckBox(item.completed, item.id);
+        let editButton = CreateButton('edit', `displayEditForm(${item.id})`);
+        let deleteButton = CreateButton('x', `deleteItem(${item.id})`);
+        let jediTask = (item.jediDoType + ' ' + item.name );
+        let index = 0;
 
-        console.log('Completed: ' + item.completed);
-
-        let isCompleteCheckbox = document.createElement('input');
-        isCompleteCheckbox.type = 'checkbox';
-        isCompleteCheckbox.disabled = true;
-        isCompleteCheckbox.checked = item.completed;
-
-        let editButton = button.cloneNode(false);
-        editButton.innerText = 'Edit';
-        editButton.setAttribute('onclick', `displayEditForm(${item.id})`);
-
-        let deleteButton = button.cloneNode(false);
-        deleteButton.innerText = 'Delete';
-        deleteButton.setAttribute('onclick', `deleteItem(${item.id})`);
-
-        let tr = tBody.insertRow();
-
-        let td1 = tr.insertCell(0);
-        td1.appendChild(isCompleteCheckbox);
-
-        let td2 = tr.insertCell(1);
-        let textNode = document.createTextNode(item.name);
-        td2.appendChild(textNode);
-
-        let td3 = tr.insertCell(2);
-        let typeNode = document.createTextNode(item.jediDoType);
-        td3.appendChild(typeNode);
-
-        //let td4 = tr.insertCell(3);
-        //   td4.appendChild();
-
-        let td4 = tr.insertCell(3);
-        td4.appendChild(editButton);
-
-        let td5 = tr.insertCell(4);
-        td5.appendChild(deleteButton);
+        tr = tBody.insertRow();
+        CreateTD(index, isCompleteCheckbox, 'center jedido-checkbox');
+        CreateTD(++index, document.createTextNode(jediTask), 'task-item');
+        CreateTD(++index, editButton, 'jedido-edit-controls');
+        CreateTD(++index, deleteButton, 'jedido-edit-controls');
     });
+  todos = data;
+}
 
-    todos = data;
+
+function CreateTD(index, element, cssclass) {
+    let _td = tr.insertCell(index);
+    if (cssclass)
+        _td.setAttribute('class', cssclass)
+    _td.appendChild(element);
+}
+
+function CreateButton(btnText, func) {
+    let _button = button.cloneNode(false);
+    _button.innerText = btnText;
+    _button.setAttribute('class', 'btn btn-sm btn-dark');
+    _button.setAttribute('onclick', func);
+    return _button;
+}
+
+function CreateCheckBox(checkState, id) {
+    let _checkbox = document.createElement('input');
+    _checkbox.setAttribute('class', 'jedido-checkbox')
+    _checkbox.type = 'checkbox';
+    _checkbox.checked = checkState;
+    _checkbox.onclick = function (e) { checkboxClickHandler(id) } 
+    return _checkbox;
+}
+
+function checkboxClickHandler(id) {
+    const item = todos.find(item => item.id === id);
+    if(debug)
+    {
+        console_log('id: ' + id);
+        console_log('item.id: ' + item.id);
+        console_log('tester: ' + item.name);
+        console_log('jediDoTypeId: ' + item.jediDoTypeId);
+        console_log('Completed: ' + item.completed);
+    }
+
+    document.getElementById("edit-id").value = id;
+    document.getElementById("edit-name").value = item.name;
+    document.getElementById("edit-type").value = item.jediDoTypeId;
+    document.getElementById("edit-Completed").checked = !item.completed; 
+    updateItem();
+    
+}
+
+function console_log(s) {
+    if (debug) {
+        console.log(s);
+    }
 }
