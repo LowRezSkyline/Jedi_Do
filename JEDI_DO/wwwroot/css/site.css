@@ -1,2 +1,15 @@
 ﻿body {
 }
+
+.header { font-size: .75em; text-transform: uppercase; font-weight: bold; } 
+.task-item { font-size: .75em;  }
+.task-type {font-size: .65em; font-weight: bold; }
+.center { text-align: center;}
+.center-table { margin-left: auto; margin-right: auto; }
+
+.jedido-checkbox { width: 15px; }
+.jedido-edit-controls { width: 20px; }
+.jedido-tag-line { font-size: .65em; font-weight: bold; text-transform: uppercase;}
+.jedido-drop-down { width: 110px; font-size: .70em; }
+.jedido-textbox { width: 190px; font-size: .70em;}
+.jedido-add-textbox { width: 235px; font-size: .70em;}
