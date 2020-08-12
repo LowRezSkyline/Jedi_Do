@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JEDI_DO", "JEDI_DO\JEDI_DO.csproj", "{F92AB265-FFD3-4C03-AE65-0969D043C5AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JEDI_DO", "JEDI_DO\JEDI_DO.csproj", "{F92AB265-FFD3-4C03-AE65-0969D043C5AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{7B2C921A-59EC-4737-92C3-D88C9F01C2ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{7B2C921A-59EC-4737-92C3-D88C9F01C2ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

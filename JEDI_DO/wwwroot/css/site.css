@@ -1,7 +1,4 @@
-﻿body {
-}
-
-.header { font-size: .75em; text-transform: uppercase; font-weight: bold; } 
+﻿.header { font-size: .75em; text-transform: uppercase; font-weight: bold; } 
 .task-item { font-size: .75em;  }
 .task-type {font-size: .65em; font-weight: bold; }
 .center { text-align: center;}

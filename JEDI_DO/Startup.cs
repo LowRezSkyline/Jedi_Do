@@ -20,16 +20,21 @@ namespace JEDI_DO
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             // To Enable SQL 
-            // 1. Uncomment out the following lines.
-            // 2. Comment out the UseInMemoryDatabase line.
-            // 3. Create the database - JediDo (localdb)
+            // 1. set 'runInMemory = false'.
+            // 3. Create the database on  (localdb) - name it: JediDo
             // 4. Run Migrations or the JediDo_InitialCreate.SQL script in the Migrations Folder
-            //services.AddDbContext<JediDoContext>(options =>
-            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<JediDoContext>(options => options.UseInMemoryDatabase("JediTodoList"));
+
+            var runInMemory = false;
+            if (!runInMemory)
+            {
+                services.AddDbContext<JediDoContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else
+            {
+                services.AddDbContext<JediDoContext>(options => options.UseInMemoryDatabase("JediTodoList"));
+            }
 
             services.AddControllers();
         }
