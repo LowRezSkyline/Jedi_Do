@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
+using Shared.Factories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace JEDI_DO.Controllers
     public class JediDoItemsController : ControllerBase
     {
         private readonly JediDoContext _context;
+
 
         public JediDoItemsController(JediDoContext context)
         {
@@ -86,7 +88,8 @@ namespace JEDI_DO.Controllers
             return CreatedAtAction(
                 nameof(GetTodoItem),
                 new { id = todoItem.Id },
-                ItemToDTO(todoItem));
+                 new ItemToDTOFactory().Create(todoItem)
+                );
         }
 
         [HttpDelete("{id}")]
@@ -115,7 +118,7 @@ namespace JEDI_DO.Controllers
             {
                 Id = todoItem.Id,
                 Name = todoItem.Name,
-                JediDoTypeId =  (todoItem.JediDoTypeId.HasValue)?  todoItem.JediDoTypeId.Value : 0,
+                JediDoTypeId = (todoItem.JediDoTypeId.HasValue) ? todoItem.JediDoTypeId.Value : 0,
                 JediDoType = todoItem.JediType,
                 Completed = todoItem.Completed
             };
