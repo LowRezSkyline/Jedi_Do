@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Shared.Factories;
 
 namespace JEDI_DO
 {
@@ -21,7 +20,17 @@ namespace JEDI_DO
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            // To Enable SQL 
+            // 1. Uncomment out the following lines.
+            // 2. Comment out the UseInMemoryDatabase line.
+            // 3. Create the database - JediDo (localdb)
+            // 4. Run Migrations or the JediDo_InitialCreate.SQL script in the Migrations Folder
+            //services.AddDbContext<JediDoContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<JediDoContext>(options => options.UseInMemoryDatabase("JediTodoList"));
+
             services.AddControllers();
         }
 
