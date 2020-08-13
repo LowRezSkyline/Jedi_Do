@@ -25,7 +25,7 @@ namespace JEDI_DO
             // 3. Create the database on  (localdb) - name it: JediDo
             // 4. Run Migrations or the JediDo_InitialCreate.SQL script in the Migrations Folder
 
-            var runInMemory = false;
+            var runInMemory = true;
             if (!runInMemory)
             {
                 services.AddDbContext<JediDoContext>(options =>

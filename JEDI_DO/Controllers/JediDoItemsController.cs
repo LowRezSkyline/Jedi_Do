@@ -14,7 +14,7 @@ namespace JEDI_DO.Controllers
     public class JediDoItemsController : ControllerBase
     {
         private readonly JediDoContext _context;
-
+        private readonly ItemToDTOFactory _itemToDTOFactory;
 
         public JediDoItemsController(JediDoContext context)
         {
@@ -25,7 +25,7 @@ namespace JEDI_DO.Controllers
         public async Task<ActionResult<IEnumerable<JediDoItemDTO>>> GetTodoItems()
         {
             return await _context.JediDoItem
-                .Select(x => ItemToDTO(x))
+                .Select(x => new ItemToDTOFactory().Create(x))
                 .ToListAsync();
         }
 
@@ -39,7 +39,7 @@ namespace JEDI_DO.Controllers
                 return NotFound();
             }
 
-            return ItemToDTO(todoItem);
+            return new ItemToDTOFactory().Create(todoItem);
         }
 
         [HttpPut("{id}")]
@@ -108,20 +108,11 @@ namespace JEDI_DO.Controllers
             return NoContent();
         }
 
-        private bool TodoItemExists(long id) =>
+        private bool TodoItemExists(int id) =>
              _context.JediDoItem.Any(e => e.Id == id);
 
 
-        // TODO: CONVERT to Factory
-        private static JediDoItemDTO ItemToDTO(JediDoItem todoItem) =>
-            new JediDoItemDTO
-            {
-                Id = todoItem.Id,
-                Name = todoItem.Name,
-                JediDoTypeId = (todoItem.JediDoTypeId.HasValue) ? todoItem.JediDoTypeId.Value : 0,
-                JediDoType = todoItem.JediType,
-                Completed = todoItem.Completed
-            };
+
     }
 
 }
