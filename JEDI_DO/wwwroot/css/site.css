@@ -6,7 +6,16 @@
 
 .jedido-checkbox { width: 15px; }
 .jedido-edit-controls { width: 20px; }
-.jedido-tag-line { font-size: .65em; font-weight: bold; text-transform: uppercase;}
+.jedido-tag-line { font-size: 1.5em; font-weight: bold; text-transform: uppercase;}
 .jedido-drop-down { width: 110px; font-size: .70em; }
 .jedido-textbox { width: 190px; font-size: .70em;}
 .jedido-add-textbox { width: 235px; font-size: .70em;}
+
+.logo {
+    height: 5rem;
+    width: auto;
+}
+
+.todo {
+    margin-top: 6rem;
+}

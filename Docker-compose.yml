@@ -1,0 +1,13 @@
+version: '2'
+services: 
+    app:
+        build:
+          context: .
+          dockerfile: Dockerfile
+        image: core-api
+        volumes:
+          - .\:/app/
+        ports:
+          - '5001:5001'
+          
+    

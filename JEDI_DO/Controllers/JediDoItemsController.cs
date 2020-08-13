@@ -1,7 +1,7 @@
-﻿using JEDI_DO.Models;
+﻿using JEDI_DO.Models; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs;
+using Shared.DTOs; 
 using Shared.Factories;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace JEDI_DO.Controllers
     {
         private readonly JediDoContext _context;
 
-        public JediDoItemsController(JediDoContext context)
+         public JediDoItemsController(JediDoContext context)
         {
             _context = context;
         }

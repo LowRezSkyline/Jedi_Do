@@ -25,7 +25,7 @@ namespace JEDI_DO
             // 3. Create the database on  (localdb) - name it: JediDo
             // 4. Run Migrations or the JediDo_InitialCreate.sql script in the Migrations Folder
 
-            var runInMemory = true;
+            var runInMemory = false;
             if (runInMemory)
             {
                 // InMemory
@@ -33,9 +33,7 @@ namespace JEDI_DO
             }
             else
             {
-                // SQL DB
-                services.AddDbContext<JediDoContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                 services.AddDbContext<JediDoContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             }
 
             services.AddControllers();
