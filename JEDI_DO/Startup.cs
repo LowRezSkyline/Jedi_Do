@@ -23,17 +23,19 @@ namespace JEDI_DO
             // To Enable SQL 
             // 1. set 'runInMemory = false'.
             // 3. Create the database on  (localdb) - name it: JediDo
-            // 4. Run Migrations or the JediDo_InitialCreate.SQL script in the Migrations Folder
+            // 4. Run Migrations or the JediDo_InitialCreate.sql script in the Migrations Folder
 
             var runInMemory = true;
-            if (!runInMemory)
+            if (runInMemory)
             {
-                services.AddDbContext<JediDoContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                // InMemory
+                services.AddDbContext<JediDoContext>(options => options.UseInMemoryDatabase("JediTodoList"));
             }
             else
             {
-                services.AddDbContext<JediDoContext>(options => options.UseInMemoryDatabase("JediTodoList"));
+                // SQL DB
+                services.AddDbContext<JediDoContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             }
 
             services.AddControllers();

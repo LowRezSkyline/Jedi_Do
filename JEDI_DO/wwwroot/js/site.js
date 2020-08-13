@@ -24,13 +24,13 @@ const Init = () => {
 const getItems =() => {
     fetch(uri)
         .then(response => response.json())
-        .then(data => _displayItems(data))
+        .then(data => displayItems(data))
         .catch(error => console_log('Unable to get items.', error));
 }
 
 const save = (typeId) => {
     console_log('save called (typeId: ' + typeId +')');
-    (typeId == 0) ?  addItem() : updateItem();
+    (typeId === 0) ?  addItem() : updateItem();
 }
 
 const addItem = () => {
@@ -58,6 +58,7 @@ const addItem = () => {
             getItems();
             addNameTextbox.value = '';
             btnAdd.setAttribute('disabled', '');
+            addTypeDropDown.selectedIndex = 0;
         })
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -65,6 +66,7 @@ const addItem = () => {
 const updateItem = () => {
     console_log('updateItem called'); 
 
+    const editTypeDropDown = document.getElementById('edit-type')
     const itemId = document.getElementById('edit-id').value;
     const addTypeDropDown = document.getElementById('edit-type')
     let editType = addTypeDropDown.options[addTypeDropDown.selectedIndex].value;
@@ -87,6 +89,7 @@ const updateItem = () => {
         .then(() => {
             getItems();
             displayEditForm(0);
+            editTypeDropDown.selectedIndex = 0;
         })  
         .catch(error => console.error('Unable to update item.', error));
 
@@ -103,22 +106,25 @@ const deleteItem = (id) => {
         .catch(error => console.error('Unable to delete item.', error));
 }
 
-const displayEditForm = (id)=> {
+const displayEditForm = (id) => {
+    console_log('id: ' + id);
 
     if (id<1) {
         document.getElementById('addForm').style.display = '';
     } else {
         const item = todos.find(item => item.id === id);
-        console_log('id: ' + id);
+        const editTypeDropDown = document.getElementById('edit-type')
+
         document.getElementById('edit-name').value = item.name;
         document.getElementById('edit-id').value = item.id;
         document.getElementById('edit-Completed').checked = item.Completed;
         document.getElementById('editForm').style.display = '';
         document.getElementById('addForm').style.display = 'none';
+
+        // set the drop-down value
+        if (item.jediDoTypeId > 0)
+            editTypeDropDown.selectedIndex = --item.jediDoTypeId;
     }
-
-
-
 }
 
 const closeInput = () => {
@@ -131,7 +137,7 @@ const SetDisplayCount = (itemCount) => {
     document.getElementById('counter').innerText = `${name} ${itemCount}`;
 }
 
-const _displayItems = (data) => {
+const displayItems = (data) => {
     const tBody = document.getElementById('todos');
     tBody.innerHTML = '';
 
@@ -179,14 +185,12 @@ const CreateCheckBox = (checkState, id) => {
 
 const checkboxClickHandler = (id) => {
     const item = todos.find(item => item.id === id);
-    if(debug)
-    {
-        console_log('id: ' + id);
-        console_log('item.id: ' + item.id);
-        console_log('tester: ' + item.name);
-        console_log('jediDoTypeId: ' + item.jediDoTypeId);
-        console_log('Completed: ' + item.completed);
-    }
+
+    console_log('id: ' + id);
+    console_log('item.id: ' + item.id);
+    console_log('tester: ' + item.name);
+    console_log('jediDoTypeId: ' + item.jediDoTypeId);
+    console_log('Completed: ' + item.completed);
 
     document.getElementById("edit-id").value = id;
     document.getElementById("edit-name").value = item.name;
