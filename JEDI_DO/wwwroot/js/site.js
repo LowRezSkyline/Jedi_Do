@@ -4,48 +4,36 @@ const debug = true;
 let todos = [];
 let tr = '';
 
-function Init() {
+const Init = () => {
 
     // hide the edit controls on initial load
     document.getElementById('editForm').style.display = 'none';
 
-
     // load the items
     getItems();
 
-    // setup the textbox handler
+    // setup the textbox handler for add button enable/disable state change
     const btnAdd = document.getElementById('btnAdd');
-    const txtAdd = document.getElementById('add-name');
-
-    const inputHandler = function (e) {
-        (txtAdd) ?  btnAdd.removeAttribute('disabled') :
-                            btnAdd.setAttribute('disabled', '');
-    }
-
-    txtAdd.addEventListener('input', inputHandler);
-    txtAdd.addEventListener('propertychange', inputHandler); // for IE8
+    const textboxAdd = document.getElementById('add-name');
+    const inputHandler = (e) => { (textboxAdd) ? btnAdd.removeAttribute('disabled') : btnAdd.setAttribute('disabled', ''); }
+    textboxAdd.addEventListener('input', inputHandler);
+    textboxAdd.addEventListener('propertychange', inputHandler); // for IE8
 
 }
 
-function getItems() {
+const getItems =() => {
     fetch(uri)
         .then(response => response.json())
         .then(data => _displayItems(data))
         .catch(error => console_log('Unable to get items.', error));
 }
 
-function save(typeId) {
-
-    console_log('typeId: ' + typeId);
-
-    if (typeId == 0) {
-        addItem();
-    } else if (typeId == 1) {
-        updateItem()
-    }
+const save = (typeId) => {
+    console_log('save called (typeId: ' + typeId +')');
+    (typeId == 0) ?  addItem() : updateItem();
 }
 
-function addItem() {
+const addItem = () => {
     const addNameTextbox = document.getElementById('add-name');
     const addTypeDropDown = document.getElementById('add-type')
     let addType = addTypeDropDown.options[addTypeDropDown.selectedIndex].value;
@@ -74,8 +62,7 @@ function addItem() {
         .catch(error => console.error('Unable to add item.', error));
 }
 
-function updateItem() {
-
+const updateItem = () => {
     console_log('updateItem called'); 
 
     const itemId = document.getElementById('edit-id').value;
@@ -108,7 +95,7 @@ function updateItem() {
     return false;
 }
 
-function deleteItem(id) {
+const deleteItem = (id) => {
     fetch(`${uri}/${id}`, {
         method: 'DELETE'
     })
@@ -116,7 +103,7 @@ function deleteItem(id) {
         .catch(error => console.error('Unable to delete item.', error));
 }
 
-function displayEditForm(id) {
+const displayEditForm = (id)=> {
 
     if (id<1) {
         document.getElementById('addForm').style.display = '';
@@ -134,18 +121,17 @@ function displayEditForm(id) {
 
 }
 
-
-function closeInput() {
+const closeInput = () => {
     document.getElementById('editForm').style.display = 'none';
     displayEditForm(0);
 }
 
-function SetDisplayCount(itemCount) {
+const SetDisplayCount = (itemCount) => {
     const name ='Total Records: ';
     document.getElementById('counter').innerText = `${name} ${itemCount}`;
 }
 
-function _displayItems(data) {
+const _displayItems = (data) => {
     const tBody = document.getElementById('todos');
     tBody.innerHTML = '';
 
@@ -167,15 +153,14 @@ function _displayItems(data) {
   todos = data;
 }
 
-
-function CreateTD(index, element, cssclass) {
+const CreateTD = (index, element, cssclass) => {
     let _td = tr.insertCell(index);
     if (cssclass)
         _td.setAttribute('class', cssclass)
     _td.appendChild(element);
 }
 
-function CreateButton(btnText, func) {
+const CreateButton = (btnText, func) => {
     let _button = button.cloneNode(false);
     _button.innerText = btnText;
     _button.setAttribute('class', 'btn btn-sm btn-dark');
@@ -183,7 +168,7 @@ function CreateButton(btnText, func) {
     return _button;
 }
 
-function CreateCheckBox(checkState, id) {
+const CreateCheckBox = (checkState, id) => {
     let _checkbox = document.createElement('input');
     _checkbox.setAttribute('class', 'jedido-checkbox')
     _checkbox.type = 'checkbox';
@@ -192,7 +177,7 @@ function CreateCheckBox(checkState, id) {
     return _checkbox;
 }
 
-function checkboxClickHandler(id) {
+const checkboxClickHandler = (id) => {
     const item = todos.find(item => item.id === id);
     if(debug)
     {
@@ -211,7 +196,7 @@ function checkboxClickHandler(id) {
     
 }
 
-function console_log(s) {
+const console_log = (s) => {
     if (debug) {
         console.log(s);
     }

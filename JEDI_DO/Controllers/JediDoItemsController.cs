@@ -14,7 +14,6 @@ namespace JEDI_DO.Controllers
     public class JediDoItemsController : ControllerBase
     {
         private readonly JediDoContext _context;
-        private readonly ItemToDTOFactory _itemToDTOFactory;
 
         public JediDoItemsController(JediDoContext context)
         {
@@ -108,8 +107,7 @@ namespace JEDI_DO.Controllers
             return NoContent();
         }
 
-        private bool TodoItemExists(int id) =>
-             _context.JediDoItem.Any(e => e.Id == id);
+        private bool TodoItemExists(int id) => _context.JediDoItem.Any(e => e.Id == id);
 
 
 

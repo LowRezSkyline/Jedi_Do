@@ -13,24 +13,8 @@ namespace JEDI_DO.Models
         public string JediType { get { return (JediDoTypeId.HasValue) ? GetJediDoType(JediDoTypeId.Value) : "N/A"; } }
 
         public bool Completed { get; set; }
-        public string Secret { get; set; }
 
-        private string GetJediDoType(int typeId)
-        {                
-            var _ret = "NA";
-            switch (typeId)
-            {
-
-                case 1:
-                    _ret = "DO!";
-                break;
-
-                case 2:
-                    _ret = "Do Not Do!";
-                    break;
-            }
-            return _ret; //  (typeId == 1) ? "Do!" : "Do Not Do!";
-        }
+        private string GetJediDoType(int typeId)  =>  (typeId == 1) ? "Do!" : "Do Not Do!";
 
     }
 }
