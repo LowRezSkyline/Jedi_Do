@@ -21,19 +21,28 @@ namespace JEDI_DO
         public void ConfigureServices(IServiceCollection services)
         {
             // To Enable SQL 
-            // 1. set 'runInMemory = false'.
+            // 1. set 'dbType = DBType.MSSQL'.
             // 3. Create the database on  (localdb) - name it: JediDo
             // 4. Run Migrations or the JediDo_InitialCreate.sql script in the Migrations Folder
 
-            var runInMemory = false;
-            if (runInMemory)
+            var dbType = DBType.SQLITE;
+
+            switch (dbType)
             {
-                // InMemory
-                services.AddDbContext<JediDoContext>(options => options.UseInMemoryDatabase("JediTodoList"));
-            }
-            else
-            {
-                 services.AddDbContext<JediDoContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                case DBType.InMemory:
+                    // InMemory
+                    services.AddDbContext<JediDoContext>(options => options.UseInMemoryDatabase("JediTodoList"));
+                    break;
+
+                case DBType.MSSQL:
+                    // SQL DB
+                    services.AddDbContext<JediDoContext>(options =>
+                            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionSQL")));
+                    break;
+
+                case DBType.SQLITE:
+                    services.AddDbContext<JediDoContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnectionSQLite")));
+                    break;
             }
 
             services.AddControllers();
@@ -61,5 +70,12 @@ namespace JEDI_DO
                 endpoints.MapControllers();
             });
         }
+    }
+
+    enum DBType
+    {
+        InMemory,
+        MSSQL,
+        SQLITE
     }
 }
