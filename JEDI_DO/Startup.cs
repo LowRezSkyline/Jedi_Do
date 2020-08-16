@@ -20,14 +20,8 @@ namespace JEDI_DO
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // To Enable SQL 
-            // 1. set 'dbType = DBType.MSSQL'.
-            // 3. Create the database on  (localdb) - name it: JediDo
-            // 4. Run Migrations or the JediDo_InitialCreate.sql script in the Migrations Folder
 
-            var dbType = DBType.SQLITE;
-
-            switch (dbType)
+            switch (DBType.MSSQL)
             {
                 case DBType.InMemory:
                     // InMemory
@@ -36,6 +30,10 @@ namespace JEDI_DO
 
                 case DBType.MSSQL:
                     // SQL DB
+                    // To Enable 
+                    // 1. set case enum: DBType.MSSQL
+                    // 3. Create the database on  (localdb) - name it: JediDo
+                    // 4. Run Migrations or the JediDo_InitialCreate.sql script in the Migrations Folder
                     services.AddDbContext<JediDoContext>(options =>
                             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionSQL")));
                     break;
