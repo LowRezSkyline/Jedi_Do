@@ -14,7 +14,7 @@ namespace JEDI_DO.Models
 
         public bool Completed { get; set; }
 
-        private string GetJediDoType(int typeId)  =>  (typeId == 1) ? "Do!" : "Do Not Do!";
+        private string GetJediDoType(int typeId)  =>  (typeId == 1) ? "Do!" : "Not Do!";
 
     }
 }
