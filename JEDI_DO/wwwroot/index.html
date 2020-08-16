@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="css/site.css" />
     <link rel="icon" href="./assets/logo.png">
 
-
+    <!-- Bootstrap Requires jquery still -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -21,25 +21,35 @@
 <body>
 
   <!--navbar-->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#"><img class=" img-fluid logo" src="./assets/logo.png" alt=""> <span class="jedido-tag-line">JEDI-do</span> </a>
-
-  </nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">
+            <table>
+                <tr>
+                    <td rowspan="2"> <img class=" img-fluid logo" src="./assets/logo_white.png" alt=""> </td>
+                    <td><span class="jedido-title-base jedido-name">JEDI-do</span></td>
+                </tr>
+                <tr>
+                    <td> <div class="jedido-title-base jedido-tag-line">There is no Try! Do! or Do Not Do!</div></td>
+                </tr>
+            </table>
+           
+           
+        </a>
+    </nav>
 <!--navbar-->   
 <section class="todo">
     <table class="table table-striped table-light" style="margin-top: 58px; ">
-
-       
-
+        <tbody id="todos"></tbody>
         <tr>
             <td colspan="4" id="addForm" class="bg-light">
                 <div id="addForm">
                     <form action="javascript:void(0);" method="POST" onsubmit="save(0)">
-                        <table  cellspacing="0" cellpadding="0"class="bg-light">
+                        <table cellspacing="0" cellpadding="0" class="bg-light">
                             <tr>
                                 <td></td>
-                                <td><input type="text" id="add-name" class="form-control  jedido-add-textbox" placeholder="New to-do">
-                                <br />
+                                <td>
+                                    <input type="text" id="add-name" class="form-control  jedido-add-textbox" placeholder="New to-do">
+                                    <br />
                                     <select id="add-type" class="form-control jedido-drop-down">
                                         <option value="1">Do!</option>
                                         <option value="2">Do Not Do!</option>
@@ -47,13 +57,12 @@
                                 </td>
                                 <td><input id="btnAdd" type="submit" value="Add" disabled="" class="btn btn-dark btn-sm"></td>
                             </tr>
-                        </table> 
+                        </table>
                     </form>
                 </div>
             </td>
         </tr>
-    </section>
-        <tbody id="todos"></tbody>
+</section>
         <tr >
             <td colspan="4" id="editForm" style="background-color: #fff;">
                 <div >
