@@ -3,7 +3,7 @@ Jedi ToDo and Do Not Do List!
 
 There is no try - Do or Do Not Do!
 
-Since there are many TODO samplle apps online I wanted to create something unique / different. 
+Since there are many TODO sample apps online I wanted to create something unique / different. 
 
 It's basicallly a simple TODO app, but you have two types of ToDos - Do's And Do Not Does. 
 
