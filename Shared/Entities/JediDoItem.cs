@@ -1,20 +1,18 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+namespace Shared.Entities;
 
-namespace JEDI_DO.Models
+public class JediDoItem
 {
-    public class JediDoItem
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Name { get; set; }
+    public int UserId { get; set; }
 
-        public int? JediDoTypeId { get; set; }
-        public string JediType { get { return (JediDoTypeId.HasValue) ? GetJediDoType(JediDoTypeId.Value) : "N/A"; } }
+    public required string Name { get; set; }
 
-        public bool Completed { get; set; }
+    public int? JediDoTypeId { get; set; }
 
-        private string GetJediDoType(int typeId)  =>  (typeId == 1) ? "Do!" : "Not Do!";
+    public bool Completed { get; set; }
 
-    }
+    public string JediType => JediDoTypeId.HasValue ? GetJediDoType(JediDoTypeId.Value) : "N/A";
+
+    private static string GetJediDoType(int typeId) => typeId == 1 ? "Do!" : "Not Do!";
 }

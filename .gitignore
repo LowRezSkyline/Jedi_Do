@@ -13,6 +13,11 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# SQLite (JEDI_DO/Data)
+JEDI_DO/Data/JediDo.db
+JEDI_DO/Data/JediDo.db-shm
+JEDI_DO/Data/JediDo.db-wal
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

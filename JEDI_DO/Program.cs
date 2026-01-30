@@ -1,42 +1,49 @@
+using System.Security.Claims;
+using JEDI_DO.Data;
 using JEDI_DO.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+using Shared.Factories;
 
-namespace JEDI_DO
-{
-    public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<JediDoContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IItemToDTOFactory, ItemToDTOFactory>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
     {
-        public static void Main(string[] args)
-        {
-                var host = CreateHostBuilder(args).Build();
-            using ( var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try {
-                    // get datacontext 
-                    var context = services.GetRequiredService<JediDoContext>();
-                    // apply existing migrations 
-                    context.Database.Migrate();
-                    Seed.SeedToDo(context);
-                }
-                catch (Exception ex) {
-                    // todo: create a logger 
-                    Console.WriteLine(ex);
-                }
-            }
+        options.LoginPath = "/login/";
+        options.Cookie.Name = "JediDo.Auth";
+        options.Cookie.SameSite = SameSiteMode.Strict;
+    });
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 
-            host.Run();
-        }
+var app = builder.Build();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var context = services.GetRequiredService<JediDoContext>();
+        context.Database.Migrate();
+        Seed.SeedToDo(context, logger);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred applying migrations or seeding the database");
+        throw;
     }
 }
+
+app.UseHttpsRedirection();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();

@@ -1,10 +1,9 @@
-﻿using JEDI_DO.Models;
 using Shared.DTOs;
+using Shared.Entities;
 
-namespace Shared.Factories
+namespace Shared.Factories;
+
+public interface IItemToDTOFactory
 {
-    public interface IItemToDTOFactory
-    {
-        JediDoItemDTO Create(JediDoItem item);
-    }
+    JediDoItemDTO? Create(JediDoItem? item);
 }
