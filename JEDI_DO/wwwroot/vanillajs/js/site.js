@@ -1,9 +1,7 @@
 const uri = '/api/JediDoItems';
 const authUri = '/api/auth';
-const button = document.createElement('button');
 const debug = true;
 let todos = [];
-let tr = '';
 
 const fetchOptions = { credentials: 'include' };
 
@@ -29,28 +27,6 @@ const Init = () => {
     document.getElementById('editForm').style.display = 'none';
     getItems();
 
-    const switchUiBtn = document.getElementById('vanillajsSwitchUi');
-    const dropdownEl = switchUiBtn && switchUiBtn.closest('.dropdown');
-    if (dropdownEl) {
-        if (typeof bootstrap !== 'undefined') {
-            try { new bootstrap.Dropdown(switchUiBtn); } catch (_) {}
-        }
-        switchUiBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            dropdownEl.classList.toggle('show');
-            const menu = dropdownEl.querySelector('.dropdown-menu');
-            if (menu) menu.classList.toggle('show');
-        });
-        const menu = dropdownEl.querySelector('.dropdown-menu');
-        if (menu) menu.addEventListener('click', function (e) { e.stopPropagation(); });
-        document.addEventListener('click', function () {
-            dropdownEl.classList.remove('show');
-            const m = dropdownEl.querySelector('.dropdown-menu');
-            if (m) m.classList.remove('show');
-        });
-    }
-
     const btnAdd = document.getElementById('btnAdd');
     const textboxAdd = document.getElementById('add-name');
     const inputHandler = () => {
@@ -58,6 +34,8 @@ const Init = () => {
     };
     textboxAdd.addEventListener('input', inputHandler);
     textboxAdd.addEventListener('propertychange', inputHandler);
+
+    document.getElementById('deleteConfirmBtn')?.addEventListener('click', confirmDelete);
 };
 
 const getItems = () => {
@@ -105,10 +83,11 @@ const updateItem = () => {
     const editTypeDropDown = document.getElementById('edit-type');
     const itemId = document.getElementById('edit-id').value;
     const editType = editTypeDropDown.options[editTypeDropDown.selectedIndex].value;
+    const origItem = todos.find(i => i.id === parseInt(itemId, 10));
 
     const item = {
         id: parseInt(itemId, 10),
-        completed: document.getElementById('edit-Completed').checked,
+        completed: origItem ? origItem.completed : false,
         jediDoTypeId: parseInt(editType, 10),
         name: document.getElementById('edit-name').value.trim()
     };
@@ -129,6 +108,25 @@ const updateItem = () => {
     return false;
 };
 
+let deleteModal = null;
+let pendingDeleteId = null;
+
+const showDeleteConfirm = (item) => {
+    pendingDeleteId = item.id;
+    const nameEl = document.getElementById('deleteItemName');
+    if (nameEl) nameEl.textContent = '"' + item.name + '"';
+    if (!deleteModal) deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    deleteModal.show();
+};
+
+const confirmDelete = () => {
+    if (pendingDeleteId == null) return;
+    const id = pendingDeleteId;
+    pendingDeleteId = null;
+    if (deleteModal) deleteModal.hide();
+    deleteItem(id);
+};
+
 const deleteItem = (id) => {
     apiFetch(`${uri}/${id}`, { method: 'DELETE' })
         .then(() => getItems())
@@ -146,7 +144,6 @@ const displayEditForm = (id) => {
 
         document.getElementById('edit-name').value = item.name;
         document.getElementById('edit-id').value = item.id;
-        document.getElementById('edit-Completed').checked = item.completed;
         document.getElementById('editForm').style.display = '';
         document.getElementById('addForm').style.display = 'none';
 
@@ -161,52 +158,73 @@ const closeInput = () => {
 };
 
 const SetDisplayCount = (itemCount) => {
-    document.getElementById('counter').innerText = `Total Records: ${itemCount}`;
+    const el = document.getElementById('counter');
+    if (el) el.textContent = itemCount === 1 ? '1 item' : `${itemCount} items`;
 };
 
 const displayItems = (data) => {
-    const tBody = document.getElementById('todos');
-    tBody.innerHTML = '';
+    const container = document.getElementById('todos');
+    container.innerHTML = '';
 
     SetDisplayCount(data.length);
 
     data.forEach(item => {
-        const isCompleteCheckbox = CreateCheckBox(item.completed, item.id);
-        const editButton = CreateButton('edit', `displayEditForm(${item.id})`);
-        const deleteButton = CreateButton('x', `deleteItem(${item.id})`);
-        const jediTask = (item.jediDoType + ' ' + item.name);
-        let index = 0;
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex align-items-start gap-3 py-3';
 
-        tr = tBody.insertRow();
-        CreateTD(index, isCompleteCheckbox, 'center jedido-checkbox');
-        CreateTD(++index, document.createTextNode(jediTask), 'task-item');
-        CreateTD(++index, editButton, 'jedido-edit-controls');
-        CreateTD(++index, deleteButton, 'jedido-edit-controls');
+        const checkbox = CreateCheckBox(item.completed, item.id);
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'flex-grow-1 jedido-task-text' + (item.completed ? ' text-decoration-line-through text-muted' : '');
+        const typeBadge = document.createElement('span');
+        typeBadge.className = 'badge jedido-type-badge ' + (item.jediDoTypeId === 1 ? 'bg-success' : 'bg-warning text-dark');
+        typeBadge.textContent = item.jediDoType || (item.jediDoTypeId === 1 ? 'Do!' : 'Not Do!');
+        typeBadge.style.marginRight = '0.5rem';
+        textSpan.appendChild(typeBadge);
+        textSpan.appendChild(document.createTextNode(item.name));
+
+        const editBtn = CreateButton('Edit', () => displayEditForm(item.id), 'btn-outline-secondary');
+        const deleteBtn = CreateButton('×', () => showDeleteConfirm(item), 'btn-outline-danger');
+
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'jedido-item-actions';
+        actionsDiv.appendChild(editBtn);
+        actionsDiv.appendChild(deleteBtn);
+
+        li.appendChild(checkbox);
+        li.appendChild(textSpan);
+        li.appendChild(actionsDiv);
+
+        container.appendChild(li);
     });
     todos = data;
 };
 
-const CreateTD = (index, element, cssclass) => {
-    const _td = tr.insertCell(index);
-    if (cssclass) _td.setAttribute('class', cssclass);
-    _td.appendChild(element);
-};
-
-const CreateButton = (btnText, func) => {
-    const _button = button.cloneNode(false);
-    _button.innerText = btnText;
-    _button.setAttribute('class', 'btn btn-sm btn-dark');
-    _button.setAttribute('onclick', func);
+const CreateButton = (btnText, handler, btnClass = 'btn-primary') => {
+    const _button = document.createElement('button');
+    _button.type = 'button';
+    _button.textContent = btnText;
+    _button.className = 'btn btn-sm ' + btnClass;
+    _button.onclick = handler;
     return _button;
 };
 
 const CreateCheckBox = (checkState, id) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'form-check mb-0';
     const _checkbox = document.createElement('input');
-    _checkbox.setAttribute('class', 'jedido-checkbox');
+    _checkbox.className = 'form-check-input jedido-checkbox';
     _checkbox.type = 'checkbox';
     _checkbox.checked = checkState;
+    _checkbox.id = 'cb-' + id;
     _checkbox.onclick = () => checkboxClickHandler(id);
-    return _checkbox;
+    const label = document.createElement('label');
+    label.className = 'form-check-label visually-hidden';
+    label.htmlFor = 'cb-' + id;
+    label.textContent = 'Toggle completed';
+    wrapper.appendChild(_checkbox);
+    wrapper.appendChild(label);
+    return wrapper;
 };
 
 const checkboxClickHandler = (id) => {
@@ -228,3 +246,5 @@ const checkboxClickHandler = (id) => {
 const console_log = (s) => {
     if (debug) console.log(s);
 };
+
+Init();

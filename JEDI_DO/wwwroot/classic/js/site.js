@@ -228,3 +228,5 @@ const checkboxClickHandler = (id) => {
 const console_log = (s) => {
     if (debug) console.log(s);
 };
+
+Init();

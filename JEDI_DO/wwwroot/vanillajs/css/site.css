@@ -1,37 +1,138 @@
-.header { font-size: .75em; text-transform: uppercase; font-weight: bold; }
-.task-item { font-size: .75em; }
-.task-type { font-size: .65em; font-weight: bold; }
-.center { text-align: center; }
-.center-table { margin-left: auto; margin-right: auto; }
+/* JEDI-do VanillaJS - Modern card-based UI */
 
-.jedido-checkbox { width: 15px; }
-.jedido-edit-controls { width: 20px; }
+:root {
+    --jedido-primary: #212529;
+    --jedido-accent: #0d6efd;
+}
 
-.jedido-title-base { font-weight: bold; text-transform: uppercase; color: white; padding-left: 5px; }
-.jedido-name { font-size: 1.10em; }
-.jedido-tag-line { font-size: .55em; font-style: italic; }
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
 
-.jedido-drop-down { width: 110px; font-size: .70em; }
-.jedido-textbox { width: 190px; font-size: .70em; }
-.jedido-add-textbox { width: 235px; font-size: .70em; }
+/* Navbar - dark theme with subtle depth */
+.navbar {
+    background: var(--jedido-primary) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand .jedido-name {
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    color: white;
+    letter-spacing: 0.02em;
+}
+
+.navbar-brand .jedido-tag-line {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+    margin-top: 0.1rem;
+}
 
 .logo {
-    height: 3rem;
+    height: 2.5rem;
     width: auto;
 }
 
-.todo {
-    margin-top: 6rem;
+/* Main content - offset for fixed navbar */
+.main-content {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
 }
 
+/* Cards */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+/* Todo list items - buttons stay top-right, text wraps */
+.list-group-item {
+    border-color: rgba(0, 0, 0, 0.06);
+    flex-wrap: nowrap;
+}
+
+.list-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.jedido-task-text {
+    word-break: break-word;
+    min-width: 0; /* allow flex child to shrink so text wraps */
+}
+
+.jedido-item-actions {
+    flex-shrink: 0;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.jedido-type-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+.jedido-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+/* Delete confirmation modal */
+#deleteConfirmModal .modal-content {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+#deleteConfirmModal .modal-header .modal-title {
+    font-weight: 600;
+    color: #212529;
+}
+
+#deleteConfirmModal .btn-danger {
+    min-width: 5rem;
+}
+
+/* Empty state */
+#todos:empty::after {
+    content: "No items yet. Add one above!";
+    display: block;
+    padding: 2rem;
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+/* Responsive */
 @media (max-width: 991.98px) {
-    .todo { margin-top: 5rem; }
-    .jedido-add-textbox, .jedido-textbox { max-width: 100%; box-sizing: border-box; }
-    .table { font-size: 0.9rem; }
+    .main-content {
+        padding-top: 4.5rem;
+    }
+
+    .navbar-brand .jedido-name {
+        font-size: 1rem;
+    }
+
+    .navbar-brand .jedido-tag-line {
+        font-size: 0.65rem;
+    }
+
+    .logo {
+        height: 2rem;
+    }
 }
 
 @media (max-width: 575.98px) {
-    .jedido-name { font-size: 0.95em; }
-    .jedido-tag-line { font-size: 0.5em; }
-    .logo { height: 2.25rem; }
+    .jedido-task-text {
+        font-size: 0.9rem;
+    }
 }
