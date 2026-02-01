@@ -1,0 +1,37 @@
+.header { font-size: .75em; text-transform: uppercase; font-weight: bold; }
+.task-item { font-size: .75em; }
+.task-type { font-size: .65em; font-weight: bold; }
+.center { text-align: center; }
+.center-table { margin-left: auto; margin-right: auto; }
+
+.jedido-checkbox { width: 15px; }
+.jedido-edit-controls { width: 20px; }
+
+.jedido-title-base { font-weight: bold; text-transform: uppercase; color: white; padding-left: 5px; }
+.jedido-name { font-size: 1.10em; }
+.jedido-tag-line { font-size: .55em; font-style: italic; }
+
+.jedido-drop-down { width: 110px; font-size: .70em; }
+.jedido-textbox { width: 190px; font-size: .70em; }
+.jedido-add-textbox { width: 235px; font-size: .70em; }
+
+.logo {
+    height: 3rem;
+    width: auto;
+}
+
+.todo {
+    margin-top: 6rem;
+}
+
+@media (max-width: 991.98px) {
+    .todo { margin-top: 5rem; }
+    .jedido-add-textbox, .jedido-textbox { max-width: 100%; box-sizing: border-box; }
+    .table { font-size: 0.9rem; }
+}
+
+@media (max-width: 575.98px) {
+    .jedido-name { font-size: 0.95em; }
+    .jedido-tag-line { font-size: 0.5em; }
+    .logo { height: 2.25rem; }
+}

@@ -11,7 +11,8 @@ const apiFetch = (url, options = {}) => {
     const opts = { ...fetchOptions, ...options };
     return fetch(url, opts).then(response => {
         if (response.status === 401) {
-            window.location.href = '/login/';
+            const returnUrl = encodeURIComponent(window.location.pathname);
+            window.location.href = '/login/?returnUrl=' + returnUrl;
             return Promise.reject(new Error('Unauthorized'));
         }
         return response;
@@ -27,6 +28,28 @@ const logout = () => {
 const Init = () => {
     document.getElementById('editForm').style.display = 'none';
     getItems();
+
+    const switchUiBtn = document.getElementById('vanillajsSwitchUi');
+    const dropdownEl = switchUiBtn && switchUiBtn.closest('.dropdown');
+    if (dropdownEl) {
+        if (typeof bootstrap !== 'undefined') {
+            try { new bootstrap.Dropdown(switchUiBtn); } catch (_) {}
+        }
+        switchUiBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropdownEl.classList.toggle('show');
+            const menu = dropdownEl.querySelector('.dropdown-menu');
+            if (menu) menu.classList.toggle('show');
+        });
+        const menu = dropdownEl.querySelector('.dropdown-menu');
+        if (menu) menu.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.addEventListener('click', function () {
+            dropdownEl.classList.remove('show');
+            const m = dropdownEl.querySelector('.dropdown-menu');
+            if (m) m.classList.remove('show');
+        });
+    }
 
     const btnAdd = document.getElementById('btnAdd');
     const textboxAdd = document.getElementById('add-name');
